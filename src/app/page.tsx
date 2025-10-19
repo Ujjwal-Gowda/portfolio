@@ -126,6 +126,7 @@ import Projects from "./components/projects";
 import Skills from "./components/skills";
 import Footer from "./components/footer";
 import Sidebar from "./components/sidebar";
+import Slides from "./components/slides";
 export default function portfolio() {
   return (
     <div>
@@ -142,6 +143,7 @@ export default function portfolio() {
 
       <Hero />
       <Projects />
+      <Slides />
       <Skills />
       <Footer />
     </div>
