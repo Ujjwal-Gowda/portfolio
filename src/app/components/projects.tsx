@@ -1,90 +1,122 @@
 "use client";
-
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { image } from "framer-motion/m";
 import Image from "next/image";
 
 const projects = [
   {
-    title: "Audio Player App",
+    title: "wallpaper App",
+    category: "Web Dev",
     description:
-      "A modern music player with playlists, themes, and REST API integration.",
-    image: "/projects/audio-player.png",
-    tech: ["React", "Node.js", "Express", "MongoDB"],
+      "A sleek personal portfolio built with React, Tailwind, and Framer Motion. Features smooth transitions and a modern UI.",
+    image: "/images/portfolio-preview.jpg",
+    link: "#",
   },
   {
-    title: "Email Classifier",
+    title: "Unity 3D Game",
+    category: "Game Dev",
     description:
-      "AI-powered email classifier that separates spam and important mail using NLP.",
-    image: "/projects/email-classifier.png",
-    tech: ["Next.js", "Python", "TensorFlow"],
+      "A third-person adventure game built in Unity with a custom camera system, combat mechanics, and exploration.",
+    video: "/videos/unity-demo.mp4",
+    link: "#",
   },
   {
-    title: "Portfolio Website",
+    title: "AI Email Classifier",
+    category: "Machine Learning",
     description:
-      "Personal website showcasing my work, skills, and contact info with a clean aesthetic.",
-    image: "/projects/portfolio.png",
-    tech: ["Next.js", "TailwindCSS", "Framer Motion"],
+      "A React + FastAPI project that classifies emails using GPT APIs and provides smart tagging features.",
+    image: "/images/ai-email.jpg",
+    link: "#",
+  },
+  {
+    title: "AI Email Classifier",
+    category: "Machine Learning",
+    description:
+      "A React + FastAPI project that classifies emails using GPT APIs and provides smart tagging features.",
+    image: "/images/ai-email.jpg",
+    link: "#",
   },
 ];
 
 export default function Projects() {
-  return (
-    <section className="min-h-screen bg-charcoal text-ash px-8 md:px-20 py-20">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-bronze">
-            My Projects
-          </h2>
-          <p className="text-ash/70 mt-4 text-lg">
-            A few selected works that showcase my development and design
-            approach.
-          </p>
-        </motion.div>
+  const [openIndex, setOpenIndex] = useState(null);
 
-        {/* Project Cards */}
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: index * 0.1 }}
-              className="bg-oxblood/20 border border-bronze/20 rounded-2xl overflow-hidden hover:scale-[1.02] hover:border-bronze/50 transition-transform duration-300"
-            >
-              <div className="relative w-full h-48">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-6 space-y-3">
-                <h3 className="text-xl font-semibold text-bronze">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-ash/80">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {project.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="bg-charcoal border border-bronze/40 text-bronze text-xs px-2 py-1 rounded-full"
+  const toggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  return (
+    <section className=" min-h-screen flex flex-col items-center py-16 justify-center">
+      <h2 className="text-sm tracking-widest text-white mb-6">
+        RECENT PROJECTS
+      </h2>
+
+      <div className="w-full max-w-2xl space-y-3">
+        {projects.map((project, index) => (
+          <div
+            key={index}
+            className="border-b border-gray-300 pb-2 cursor-pointer"
+            onClick={() => toggle(index)}
+          >
+            {/* Header row */}
+            <div className="flex justify-between items-center py-3">
+              <p className="text-white font-medium">{project.title}</p>
+              <span className="text-gray-500 text-sm">{project.category}</span>
+            </div>
+
+            {/* Drop-down content */}
+            <AnimatePresence>
+              {openIndex === index && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden text-white"
+                >
+                  <div className="py-3 space-y-3">
+                    <p>{project.description}</p>
+                    {/* Image */}
+                    {project.image && (
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="rounded-2xl shadow-sm w-full object-cover"
+                      />
+                    )}
+                    <Image
+                      src={`${project.image}`}
+                      alt={project.title}
+                      width={500}
+                      height={300}
+                      className="rounded-2xl shadow-sm w-full object-cover"
+                    />
+                    {/* Video */}
+                    {project.video && (
+                      <video
+                        src={project.video}
+                        controls
+                        className="rounded-2xl shadow-sm w-full object-cover"
+                      />
+                    )}
+                    <a
+                      href={project.link}
+                      className="text-sm text-blue-600 hover:underline block"
                     >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                      View Project →
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ))}
       </div>
+
+      <button className="mt-8 px-4 py-2 border rounded-full text-sm hover:bg-gray-200 transition">
+        Full archive →
+      </button>
     </section>
   );
 }
