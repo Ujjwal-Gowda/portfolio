@@ -26,7 +26,7 @@ export default function Contact() {
         {/* Contact Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-6 mb-12">
           <a
-            href="mailto:ujjwal@example.com"
+            href="mailto:ujjwalgangadhar@example.com"
             className="flex items-center gap-2 border border-bronze/40 text-bronze px-6 py-3 rounded-full hover:bg-bronze hover:text-charcoal transition"
           >
             <Mail size={18} /> Email Me
@@ -42,7 +42,7 @@ export default function Contact() {
           </a>
 
           <a
-            href="https://linkedin.com/in/ujjwal-gowda"
+            href="https://linkedin.com/in/ujjwal-gangadhar-653399361"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 border border-bronze/40 text-bronze px-6 py-3 rounded-full hover:bg-bronze hover:text-charcoal transition"
@@ -53,8 +53,7 @@ export default function Contact() {
 
         {/* Subtle Signoff */}
         <p className="text-sm text-ash/60 mt-16">
-          © {new Date().getFullYear()} Ujjwal Gowda. Built with Next.js &
-          TailwindCSS.
+          © {new Date().getFullYear()} Ujjwal Gowda G
         </p>
       </motion.div>
     </section>
