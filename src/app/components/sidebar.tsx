@@ -17,7 +17,7 @@ const Sidebar = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      if (currentScrollY < lastScrollY || currentScrollY < 50) {
+      if (currentScrollY < 20) {
         setIsVisible(true);
 
         // Clear existing timeout
