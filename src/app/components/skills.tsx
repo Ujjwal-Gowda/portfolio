@@ -50,13 +50,13 @@ export default function SkillsMasonry() {
   }, []);
 
   return (
-    <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#111] from-gray-50 to-white">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3 sm:mb-4">
             My Skills
           </h2>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+          <p className="text-base sm:text-lg text-white max-w-2xl mx-auto px-4">
             The tools and technologies I use to design, build, and deploy
             full-stack applications.
           </p>
@@ -71,7 +71,7 @@ export default function SkillsMasonry() {
           {skillCategories.map((category, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow"
+              className="bg-gray-300 rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow"
             >
               <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 pb-2 border-b border-gray-200">
                 {category.title}
