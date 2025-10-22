@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { Mail, Github, Linkedin } from "lucide-react";
 
@@ -11,12 +13,13 @@ export default function Contact() {
         className="max-w-3xl mx-auto"
       >
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#d4a574] mb-4 sm:mb-6 leading-tight">
-          Let's Build Something Together
+          Let&apos;s Build Something Together
         </h2>
+
         <p className="text-gray-400 text-base sm:text-lg mb-8 sm:mb-10 leading-relaxed px-4 sm:px-0">
-          I'm currently open to freelance projects, collaborations, or full-time
-          opportunities. If you think I'd be a good fit for your team or project
-          — let's connect.
+          I`&apos;`m currently open to freelance projects, collaborations, or
+          full-time opportunities. If you think I`&apos;`d be a good fit for
+          your team or project — let`&apos;`s connect.
         </p>
 
         {/* Contact Buttons */}
