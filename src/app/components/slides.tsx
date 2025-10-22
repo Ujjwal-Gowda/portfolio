@@ -1,141 +1,192 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function CardSlides() {
   const router = useRouter();
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const cards = [
     {
       title: "Audio Player",
       image: "/images/play4.png",
       link: "/projects/audio-player",
+      accent: "#9333ea",
     },
     {
       title: "Audio Player 2",
       image: "/images/play3.png",
       link: "/projects/audio-player-2",
+      accent: "#0ea5e9",
     },
     {
       title: "Chat App",
       image: "/images/chat4.png",
       link: "/projects/chat-app",
+      accent: "#10b981",
     },
     {
       title: "Wallpaper App",
       image: "/images/wall.png",
       link: "/projects/wallpaper-app",
+      accent: "#f59e0b",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#111] flex items-center justify-center font-sans px-4">
-      <div className="card-container">
-        {cards.map((card, index) => (
-          <div
-            key={index}
-            onClick={() => router.push(card.link)}
-            className="card-item group"
-          >
-            <div className="card-image-wrapper">
-              <img src={card.image} alt={card.title} className="card-image" />
-              <div className="card-overlay" />
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111] to-[#1a1a1a] flex items-center justify-center font-sans px-4 py-8 md:py-0">
+      <div className="w-full max-w-7xl">
+        {/* Desktop View */}
+        <div className="hidden md:flex items-center justify-center gap-8 perspective-1000">
+          {cards.map((card, index) => (
+            <div
+              key={index}
+              onClick={() => router.push(card.link)}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className="relative h-[580px] w-[340px] bg-[#1a1a1a] rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out group"
+              style={{
+                transform:
+                  hoveredIndex === index
+                    ? "translateY(-20px) scale(1.08)"
+                    : "translateY(0) scale(1)",
+                zIndex: hoveredIndex === index ? 50 : 10,
+              }}
+            >
+              {/* Image Container */}
+              <div className="absolute inset-0 overflow-hidden">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="w-full h-full object-cover transition-all duration-700 ease-out"
+                  style={{
+                    filter: hoveredIndex === index ? "brightness(110%)" : "brightness(85%)",
+                    transform: hoveredIndex === index ? "scale(1.15)" : "scale(1)",
+                  }}
+                />
+              </div>
+
+              {/* Subtle Vignette (top and sides only) */}
+              <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)",
+                }}
+              />
+
+              {/* Accent Glow on Hover */}
+              <div
+                className="absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none"
+                style={{
+                  opacity: hoveredIndex === index ? 0.15 : 0,
+                  background: `radial-gradient(circle at 50% 120%, ${card.accent} 0%, transparent 70%)`,
+                }}
+              />
+
+              {/* Content Container */}
+              <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                {/* Title Section */}
+                <div className="relative z-10">
+                  <h3
+                    className="text-white font-light text-3xl tracking-wide transition-all duration-300"
+                    style={{
+                      transform: hoveredIndex === index ? "translateY(-4px)" : "translateY(0)",
+                      textShadow: "0 2px 12px rgba(0, 0, 0, 0.8)",
+                    }}
+                  >
+                    {card.title}
+                  </h3>
+                  <div
+                    className="mt-3 h-0.5 rounded-full transition-all duration-500"
+                    style={{
+                      width: hoveredIndex === index ? "60px" : "0px",
+                      backgroundColor: card.accent,
+                      boxShadow: hoveredIndex === index ? `0 0 12px ${card.accent}` : "none",
+                    }}
+                  />
+                </div>
+
+                {/* Bottom Indicator */}
+                <div className="flex items-center gap-2 opacity-0 transition-opacity duration-300"
+                  style={{ opacity: hoveredIndex === index ? 1 : 0 }}
+                >
+                  <span className="text-white/70 text-sm font-light">View Project</span>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    className="transition-transform duration-300"
+                    style={{ transform: hoveredIndex === index ? "translateX(4px)" : "translateX(0)" }}
+                  >
+                    <path
+                      d="M6 3L11 8L6 13"
+                      stroke={card.accent}
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Border Glow */}
+              <div
+                className="absolute inset-0 rounded-2xl pointer-events-none transition-all duration-500"
+                style={{
+                  border: hoveredIndex === index ? `1px solid ${card.accent}40` : "1px solid transparent",
+                  boxShadow: hoveredIndex === index ? `0 0 30px ${card.accent}30` : "none",
+                }}
+              />
             </div>
-            <h3 className="card-title">{card.title}</h3>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Mobile View */}
+        <div className="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {cards.map((card, index) => (
+            <div
+              key={index}
+              onClick={() => router.push(card.link)}
+              className="relative h-80 bg-[#1a1a1a] rounded-2xl overflow-hidden cursor-pointer active:scale-95 transition-transform duration-200"
+            >
+              {/* Image */}
+              <div className="absolute inset-0 overflow-hidden">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="w-full h-full object-cover"
+                  style={{ filter: "brightness(85%)" }}
+                />
+              </div>
+
+              {/* Vignette */}
+              <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)",
+                }}
+              />
+
+              {/* Content */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-white font-light text-2xl sm:text-3xl drop-shadow-lg">
+                    {card.title}
+                  </h3>
+                  <div
+                    className="mt-2 w-12 h-0.5 rounded-full"
+                    style={{ backgroundColor: card.accent }}
+                  />
+                </div>
+              </div>
+
+              {/* Border */}
+              <div className="absolute inset-0 rounded-2xl border border-white/5 pointer-events-none" />
+            </div>
+          ))}
+        </div>
       </div>
-
-      {/* Minimal Styles */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          .card-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 1600px;
-            height: 650px;
-            margin: 0 auto;
-          }
-
-          .card-item {
-            position: relative;
-            height: 620px;
-            width: 450px;
-            background-color: #17141d;
-            border-radius: 25px;
-            box-shadow: -1rem 0 1rem #000;
-            transition: all 0.4s ease-out;
-            overflow: hidden;
-            cursor: pointer;
-          }
-
-          .card-item:not(:first-child) {
-            margin-left: -150px;
-          }
-
-          .card-item:hover {
-            transform: translateY(-40px) scale(1.05);
-            z-index: 10;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5),
-                        -0.5rem 0 1rem #000,
-                        0 0 0 1px rgba(255, 255, 255, 0.05);
-          }
-
-          .card-item:hover ~ .card-item {
-            position: relative;
-            left: 150px;
-          }
-
-          .card-image-wrapper {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            overflow: hidden;
-          }
-
-          .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(70%);
-            transition: all 0.5s ease;
-          }
-
-          .card-item:hover .card-image {
-            transform: scale(1.08);
-            filter: brightness(100%);
-          }
-
-          .card-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(23,20,29,0.05) 0%, rgba(23,20,29,0.85) 100%);
-            z-index: 2;
-          }
-
-          .card-title {
-            position: absolute;
-            left: 40px;
-            top: 35px;
-            color: white;
-            font-weight: 300;
-            font-size: 2rem;
-            z-index: 3;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, color 0.3s ease;
-          }
-
-          .card-item:hover .card-title {
-            transform: translateY(-8px);
-            color: #ffba00;
-          }
-        `,
-        }}
-      />
     </div>
   );
 }
