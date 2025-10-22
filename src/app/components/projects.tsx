@@ -48,11 +48,11 @@ const projects = [
 ];
 
 export default function Projects() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const toggle = (index: number) => {
+  const toggle = (index) => {
     if (openIndex === index) {
       setOpenIndex(null);
       setCurrentSlide(0);
@@ -62,32 +62,32 @@ export default function Projects() {
     }
   };
 
-  const nextSlide = (mediaLength: number) => {
+  const nextSlide = (mediaLength) => {
     setCurrentSlide((prev) => (prev + 1) % mediaLength);
   };
 
-  const prevSlide = (mediaLength: number) => {
+  const prevSlide = (mediaLength) => {
     setCurrentSlide((prev) => (prev - 1 + mediaLength) % mediaLength);
   };
 
-  // 🕒 Auto-play logic
+  // Auto-play logic
   useEffect(() => {
     if (openIndex === null || isPaused) return;
     const mediaLength = projects[openIndex].media.length;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % mediaLength);
-    }, 4000); // change every 4 seconds
+    }, 4000);
 
     return () => clearInterval(timer);
   }, [openIndex, isPaused]);
 
   return (
-    <section className="min-h-screen flex flex-col items-center py-16 justify-center bg-[#111]">
-      <h2 className="text-sm tracking-widest text-gray-300 mb-6">
+    <section className="min-h-screen flex flex-col items-center py-8 sm:py-12 md:py-16 justify-center bg-[#111] px-4 sm:px-6">
+      <h2 className="text-xs sm:text-sm tracking-widest text-gray-300 mb-4 sm:mb-6">
         RECENT PROJECTS
       </h2>
 
-      <div className="w-full max-w-3xl space-y-3">
+      <div className="w-full max-w-3xl space-y-2 sm:space-y-3">
         {projects.map((project, index) => (
           <div
             key={index}
@@ -95,9 +95,13 @@ export default function Projects() {
             onClick={() => toggle(index)}
           >
             {/* Header row */}
-            <div className="flex justify-between items-center py-3">
-              <p className="text-white font-medium">{project.title}</p>
-              <span className="text-gray-500 text-sm">{project.category}</span>
+            <div className="flex justify-between items-center py-2 sm:py-3 gap-2">
+              <p className="text-white font-medium text-sm sm:text-base">
+                {project.title}
+              </p>
+              <span className="text-gray-500 text-xs sm:text-sm whitespace-nowrap">
+                {project.category}
+              </span>
             </div>
 
             {/* Drop-down content */}
@@ -111,14 +115,18 @@ export default function Projects() {
                   className="overflow-hidden text-white"
                 >
                   <div
-                    className="py-4 space-y-4"
+                    className="py-3 sm:py-4 space-y-3 sm:space-y-4"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
+                    onTouchStart={() => setIsPaused(true)}
+                    onTouchEnd={() => setIsPaused(false)}
                   >
-                    <p>{project.description}</p>
+                    <p className="text-sm sm:text-base text-gray-300">
+                      {project.description}
+                    </p>
 
                     {/* Carousel */}
-                    <div className="relative w-full overflow-hidden rounded-2xl shadow-md">
+                    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl shadow-md">
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={currentSlide}
@@ -134,13 +142,13 @@ export default function Projects() {
                               alt={`${project.title}-${currentSlide}`}
                               width={800}
                               height={450}
-                              className="w-full h-auto object-cover rounded-2xl"
+                              className="w-full h-auto object-cover rounded-xl sm:rounded-2xl"
                             />
                           ) : (
                             <video
                               src={project.media[currentSlide].src}
                               controls
-                              className="w-full rounded-2xl"
+                              className="w-full rounded-xl sm:rounded-2xl"
                             />
                           )}
                         </motion.div>
@@ -152,7 +160,8 @@ export default function Projects() {
                           e.stopPropagation();
                           prevSlide(project.media.length);
                         }}
-                        className="absolute top-1/2 left-3 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full"
+                        className="absolute top-1/2 left-2 sm:left-3 -translate-y-1/2 bg-black/50 hover:bg-black/70 active:bg-black/80 text-white p-1.5 sm:p-2 rounded-full transition-all text-lg sm:text-xl"
+                        aria-label="Previous slide"
                       >
                         ‹
                       </button>
@@ -161,13 +170,14 @@ export default function Projects() {
                           e.stopPropagation();
                           nextSlide(project.media.length);
                         }}
-                        className="absolute top-1/2 right-3 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full"
+                        className="absolute top-1/2 right-2 sm:right-3 -translate-y-1/2 bg-black/50 hover:bg-black/70 active:bg-black/80 text-white p-1.5 sm:p-2 rounded-full transition-all text-lg sm:text-xl"
+                        aria-label="Next slide"
                       >
                         ›
                       </button>
 
                       {/* Dots */}
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                      <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2">
                         {project.media.map((_, i) => (
                           <button
                             key={i}
@@ -175,11 +185,12 @@ export default function Projects() {
                               e.stopPropagation();
                               setCurrentSlide(i);
                             }}
-                            className={`w-2.5 h-2.5 rounded-full ${
+                            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${
                               currentSlide === i
-                                ? "bg-white"
+                                ? "bg-white scale-110"
                                 : "bg-gray-500/50 hover:bg-gray-300"
                             }`}
+                            aria-label={`Go to slide ${i + 1}`}
                           ></button>
                         ))}
                       </div>
@@ -187,7 +198,9 @@ export default function Projects() {
 
                     <a
                       href={project.link}
-                      className="text-sm text-blue-500 hover:underline block"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs sm:text-sm text-blue-400 hover:text-blue-300 hover:underline block transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       View Project →
@@ -202,9 +215,9 @@ export default function Projects() {
 
       <button
         onClick={() =>
-          window.open("https://github.com/ujjwal-gowda", "git hub")
+          window.open("https://github.com/ujjwal-gowda", "_blank")
         }
-        className="mt-10 px-5 py-2 border border-gray-500 text-gray-300 rounded-full text-sm hover:bg-gray-800 transition  hover:px-6"
+        className="mt-8 sm:mt-10 px-4 sm:px-5 py-2 border border-gray-500 text-gray-300 rounded-full text-xs sm:text-sm hover:bg-gray-800 hover:border-gray-400 active:scale-95 transition-all"
       >
         Git Hub →
       </button>

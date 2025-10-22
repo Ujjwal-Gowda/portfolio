@@ -10,31 +10,32 @@ export default function CardSlides() {
     {
       title: "Audio Player",
       image: "/images/play4.png",
-      link: "/projects/audio-player",
+      link:  "https://audio-player-five-coral.vercel.app/",
       accent: "#9333ea",
-    },
-    {
-      title: "Audio Player 2",
-      image: "/images/play3.png",
-      link: "/projects/audio-player-2",
-      accent: "#0ea5e9",
     },
     {
       title: "Chat App",
       image: "/images/chat4.png",
-      link: "/projects/chat-app",
+      link: "https://chat-app-od00.onrender.com/",
       accent: "#10b981",
+    },
+    {
+      title: "Audio Player",
+      image: "/images/play3.png",
+      link:  "https://audio-player-five-coral.vercel.app/",
+      accent: "#0ea5e9",
     },
     {
       title: "Wallpaper App",
       image: "/images/wall.png",
-      link: "/projects/wallpaper-app",
+      link:  "https://wallpaper-app-frontend.vercel.app/",
       accent: "#f59e0b",
     },
+ 
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111] to-[#1a1a1a] flex items-center justify-center font-sans px-4 py-8 md:py-0">
+    <div className="min-h-screen bg-[#111] flex items-center justify-center font-sans px-4 py-8 md:py-0">
       <div className="w-full max-w-7xl">
         {/* Desktop View */}
         <div className="hidden md:flex items-center justify-center gap-8 perspective-1000">
