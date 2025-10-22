@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image"
+import Image from "next/image";
 export default function CardSlides() {
   const router = useRouter();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -10,7 +10,7 @@ export default function CardSlides() {
     {
       title: "Audio Player",
       image: "/images/play4.png",
-      link:  "https://audio-player-five-coral.vercel.app/",
+      link: "https://audio-player-five-coral.vercel.app/",
       accent: "#9333ea",
     },
     {
@@ -22,16 +22,15 @@ export default function CardSlides() {
     {
       title: "Audio Player",
       image: "/images/play3.png",
-      link:  "https://audio-player-five-coral.vercel.app/",
+      link: "https://audio-player-five-coral.vercel.app/",
       accent: "#0ea5e9",
     },
     {
       title: "Wallpaper App",
       image: "/images/wall.png",
-      link:  "https://wallpaper-app-frontend.vercel.app/",
+      link: "https://wallpaper-app-frontend.vercel.app/",
       accent: "#f59e0b",
     },
- 
   ];
 
   return (
@@ -55,21 +54,21 @@ export default function CardSlides() {
               }}
             >
               {/* Image Container */}
-              <div className="absolute inset-0 overflow-hidden">
-                             </div>
-<Image
-  src={card.image}
-  alt={card.title}
-  fill
-  className="object-cover"
-  sizes="(max-width: 768px) 100vw, 340px"
-/>
+              <div className="absolute inset-0 overflow-hidden"></div>
+              <Image
+                src={card.image}
+                alt={card.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 340px"
+              />
 
               {/* Subtle Vignette (top and sides only) */}
-              <div 
+              <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)",
+                  background:
+                    "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)",
                 }}
               />
 
@@ -89,7 +88,10 @@ export default function CardSlides() {
                   <h3
                     className="text-white font-light text-3xl tracking-wide transition-all duration-300"
                     style={{
-                      transform: hoveredIndex === index ? "translateY(-4px)" : "translateY(0)",
+                      transform:
+                        hoveredIndex === index
+                          ? "translateY(-4px)"
+                          : "translateY(0)",
                       textShadow: "0 2px 12px rgba(0, 0, 0, 0.8)",
                     }}
                   >
@@ -100,23 +102,34 @@ export default function CardSlides() {
                     style={{
                       width: hoveredIndex === index ? "60px" : "0px",
                       backgroundColor: card.accent,
-                      boxShadow: hoveredIndex === index ? `0 0 12px ${card.accent}` : "none",
+                      boxShadow:
+                        hoveredIndex === index
+                          ? `0 0 12px ${card.accent}`
+                          : "none",
                     }}
                   />
                 </div>
 
                 {/* Bottom Indicator */}
-                <div className="flex items-center gap-2 opacity-0 transition-opacity duration-300"
+                <div
+                  className="flex items-center gap-2 opacity-0 transition-opacity duration-300"
                   style={{ opacity: hoveredIndex === index ? 1 : 0 }}
                 >
-                  <span className="text-white/70 text-sm font-light">View Project</span>
+                  <span className="text-white/70 text-sm font-light">
+                    View Project
+                  </span>
                   <svg
                     width="16"
                     height="16"
                     viewBox="0 0 16 16"
                     fill="none"
                     className="transition-transform duration-300"
-                    style={{ transform: hoveredIndex === index ? "translateX(4px)" : "translateX(0)" }}
+                    style={{
+                      transform:
+                        hoveredIndex === index
+                          ? "translateX(4px)"
+                          : "translateX(0)",
+                    }}
                   >
                     <path
                       d="M6 3L11 8L6 13"
@@ -133,8 +146,14 @@ export default function CardSlides() {
               <div
                 className="absolute inset-0 rounded-2xl pointer-events-none transition-all duration-500"
                 style={{
-                  border: hoveredIndex === index ? `1px solid ${card.accent}40` : "1px solid transparent",
-                  boxShadow: hoveredIndex === index ? `0 0 30px ${card.accent}30` : "none",
+                  border:
+                    hoveredIndex === index
+                      ? `1px solid ${card.accent}40`
+                      : "1px solid transparent",
+                  boxShadow:
+                    hoveredIndex === index
+                      ? `0 0 30px ${card.accent}30`
+                      : "none",
                 }}
               />
             </div>
@@ -150,21 +169,21 @@ export default function CardSlides() {
               className="relative h-80 bg-[#1a1a1a] rounded-2xl overflow-hidden cursor-pointer active:scale-95 transition-transform duration-200"
             >
               {/* Image */}
-              <div className="absolute inset-0 overflow-hidden">
-              </div>
-<Image
-  src={card.image}
-  alt={card.title}
-  fill
-  className="object-cover"
-  sizes="(max-width: 768px) 100vw, 340px"
-/>
+              <div className="absolute inset-0 overflow-hidden"></div>
+              <Image
+                src={card.image}
+                alt={card.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 340px"
+              />
 
               {/* Vignette */}
-              <div 
+              <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)",
+                  background:
+                    "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)",
                 }}
               />
 

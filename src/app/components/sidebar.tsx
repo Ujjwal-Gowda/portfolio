@@ -1,7 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const Sidebar = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [hideTimeout, setHideTimeout] = useState<NodeJS.Timeout | null>(null);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -9,10 +13,88 @@ const Sidebar = () => {
     }
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Show sidebar when scrolling up or at top
+      if (currentScrollY < lastScrollY || currentScrollY < 50) {
+        setIsVisible(true);
+
+        // Clear existing timeout
+        if (hideTimeout) {
+          clearTimeout(hideTimeout);
+        }
+
+        // Set new timeout to hide after 3 seconds of inactivity
+        const timeout = setTimeout(() => {
+          setIsVisible(false);
+        }, 3000);
+
+        setHideTimeout(timeout);
+      } else {
+        // Hide immediately when scrolling down
+        setIsVisible(false);
+        if (hideTimeout) {
+          clearTimeout(hideTimeout);
+        }
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    // Only add scroll listener on mobile
+    if (window.innerWidth < 768) {
+      window.addEventListener("scroll", handleScroll);
+
+      // Set initial timeout
+      const timeout = setTimeout(() => {
+        setIsVisible(false);
+      }, 3000);
+      setHideTimeout(timeout);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+        if (hideTimeout) {
+          clearTimeout(hideTimeout);
+        }
+      };
+    }
+  }, [lastScrollY, hideTimeout]);
+
+  const handleMouseEnter = () => {
+    if (window.innerWidth < 768) {
+      setIsVisible(true);
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (window.innerWidth < 768) {
+      const timeout = setTimeout(() => {
+        setIsVisible(false);
+      }, 2000);
+      setHideTimeout(timeout);
+    }
+  };
+
   return (
-    <ul className="w-64 flex flex-col gap-1 pl-1">
+    <ul
+      className={`
+        fixed left-2 top-1/2 -translate-y-1/2 z-50
+        flex flex-col gap-1 pl-1
+        transition-all duration-300 ease-in-out
+        md:w-64 md:translate-x-0 md:opacity-100
+        ${isVisible ? "w-14 translate-x-0 opacity-100" : "w-14 -translate-x-16 opacity-0"}
+      `}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleMouseEnter}
+    >
       {/* Home */}
-      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg">
+      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg md:w-14">
         <button
           onClick={() => scrollToSection("hero")}
           className="peer flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-indigo-800 transition-all active:scale-95"
@@ -33,12 +115,12 @@ const Sidebar = () => {
               />
             </svg>
           </div>
-          <div className="font-semibold">Home</div>
+          <div className="font-semibold whitespace-nowrap">Home</div>
         </button>
       </li>
 
       {/* Projects */}
-      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg">
+      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg md:w-14">
         <button
           onClick={() => scrollToSection("projects")}
           className="peer flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-purple-800 transition-all active:scale-95"
@@ -59,12 +141,12 @@ const Sidebar = () => {
               />
             </svg>
           </div>
-          <div className="font-semibold">Projects</div>
+          <div className="font-semibold whitespace-nowrap">Projects</div>
         </button>
       </li>
 
       {/* Skills */}
-      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg">
+      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg md:w-14">
         <button
           onClick={() => scrollToSection("skills")}
           className="peer flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-emerald-800 transition-all active:scale-95"
@@ -85,12 +167,12 @@ const Sidebar = () => {
               />
             </svg>
           </div>
-          <div className="font-semibold">Skills</div>
+          <div className="font-semibold whitespace-nowrap">Skills</div>
         </button>
       </li>
 
       {/* Contact */}
-      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg">
+      <li className="group w-14 overflow-hidden rounded-lg border-l border-transparent bg-white transition-all duration-500 hover:w-64 hover:border-gray-200 hover:shadow-lg has-[:focus]:w-64 has-[:focus]:shadow-lg md:w-14">
         <button
           onClick={() => scrollToSection("contact")}
           className="peer flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-amber-800 transition-all active:scale-95"
@@ -111,7 +193,7 @@ const Sidebar = () => {
               />
             </svg>
           </div>
-          <div className="font-semibold">Contact</div>
+          <div className="font-semibold whitespace-nowrap">Contact</div>
         </button>
       </li>
     </ul>

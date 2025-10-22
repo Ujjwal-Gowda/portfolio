@@ -56,45 +56,47 @@ export default function SkillsMasonry() {
   }, []);
 
   return (
-    <section className="min-h-screen py-20 px-6  bg-[#111]  text-white">
+    <section className="min-h-screen py-12 sm:py-20 px-4 sm:px-6 bg-[#111] text-white">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-5xl font-bold mb-4 text-center  bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text">
+        <h2 className="text-3xl sm:text-5xl font-bold mb-3 sm:mb-4 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text">
           My Skills
         </h2>
-        <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-400 text-center mb-8 sm:mb-12 max-w-2xl mx-auto">
           The tools and technologies I use to design, build, and deploy
           full-stack applications.
         </p>
-
         {/* Masonry Layout */}
         <div
           className="masonry"
-          style={{ columnCount: columns, columnGap: "1.5rem" }}
+          style={{
+            columnCount: columns,
+            columnGap: columns === 1 ? "0" : "1.5rem",
+          }}
         >
           {skillCategories.map((category, index) => (
-            <div key={index} className="break-inside-avoid mb-8">
-              <h3 className="text-2xl font-semibold mb-4 text-blue-400">
+            <div key={index} className="break-inside-avoid mb-6 sm:mb-8">
+              <h3 className="text-lg sm:text-2xl font-semibold mb-3 sm:mb-4 text-blue-400">
                 {category.title}
               </h3>
               {category.skills.map((skill, i) => (
                 <div
                   key={i}
                   className="group bg-gradient-to-br from-gray-800/80 to-gray-900/80
-                    border border-gray-700/50 p-6 rounded-2xl mb-4
+                    border border-gray-700/50 p-3 sm:p-6 rounded-xl sm:rounded-2xl mb-3 sm:mb-4
                     hover:border-blue-500/50 hover:shadow-blue-500/20
                     transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-12 h-12">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="relative w-8 h-8 sm:w-12 sm:h-12">
                       <Image
                         src={skill.image}
                         alt={skill.name}
                         fill
-                        sizes="64px"
+                        sizes="(max-width: 640px) 32px, 48px"
                         className="object-contain group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-                    <h4 className="text-xl font-semibold group-hover:text-blue-400 transition-colors">
+                    <h4 className="text-base sm:text-xl font-semibold group-hover:text-blue-400 transition-colors">
                       {skill.name}
                     </h4>
                   </div>
