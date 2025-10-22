@@ -8,7 +8,7 @@ const skillCategories = [
     skills: [
       { name: "JavaScript", image: "/icons/javascript.svg" },
       { name: "TypeScript", image: "/icons/typescript.svg" },
-      { name: "Java", image: "/icons/cplusplus.svg" },
+      { name: "C++", image: "/icons/cplusplus.svg" },
       { name: "Python", image: "/icons/python.svg" },
       { name: "HTML5", image: "/icons/html5.svg" },
       { name: "CSS3", image: "/icons/css3.svg" },
@@ -56,9 +56,9 @@ export default function SkillsMasonry() {
   }, []);
 
   return (
-    <section className="min-h-screen py-20 px-6 bg-[#0d0b10] text-white">
+    <section className="min-h-screen py-20 px-6  bg-[#111]  text-white">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-5xl font-bold mb-4 text-center  bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-">
+        <h2 className="text-5xl font-bold mb-4 text-center  bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text">
           My Skills
         </h2>
         <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">

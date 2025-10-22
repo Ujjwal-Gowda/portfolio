@@ -6,11 +6,12 @@ import Skills from "./components/skills";
 import Footer from "./components/footer";
 import Sidebar from "./components/sidebar";
 import Slides from "./components/slides";
+
 export default function Portfolio() {
   return (
     <div>
       <motion.aside
-        className="fixed top-1/2 left-4 -translate-y-1/2 group"
+        className="fixed top-1/2 left-4 -translate-y-1/2 group z-50"
         initial={{ width: "3.5rem" }}
         whileHover={{ width: "16rem" }}
         transition={{ type: "spring", stiffness: 200, damping: 20 }}
@@ -20,11 +21,25 @@ export default function Portfolio() {
         </div>
       </motion.aside>
 
-      <Hero />
-      <Projects />
-      <Slides />
-      <Skills />
-      <Footer />
+      <div id="hero">
+        <Hero />
+      </div>
+
+      <div id="projects">
+        <Projects />
+      </div>
+
+      <div id="slides">
+        <Slides />
+      </div>
+
+      <div id="skills">
+        <Skills />
+      </div>
+
+      <div id="contact">
+        <Footer />
+      </div>
     </div>
   );
 }

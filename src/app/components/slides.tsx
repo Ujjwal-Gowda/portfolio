@@ -29,7 +29,7 @@ export default function CardSlides() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#100e17] flex items-center justify-center font-sans px-4">
+    <div className="min-h-screen bg-[#111] flex items-center justify-center font-sans px-4">
       <div className="card-container">
         {cards.map((card, index) => (
           <div
