@@ -18,7 +18,7 @@ export default function Contact() {
 
         <p className="text-gray-400 text-base sm:text-lg mb-8 sm:mb-10 leading-relaxed px-4 sm:px-0">
           I`&apos;`m currently open to freelance projects, collaborations, or
-          full-time opportunities. If you think I`&apos;`d be a good fit for
+          full-time opportunities. If you think I `&apos;`d be a good fit for
           your team or project — let`&apos;`s connect.
         </p>
 

@@ -20,28 +20,27 @@ const Sidebar = () => {
       if (currentScrollY < lastScrollY || currentScrollY < 50) {
         setIsVisible(true);
 
+        // Clear existing timeout
         if (hideTimeout) {
           clearTimeout(hideTimeout);
         }
 
+        // Set new timeout to hide after 3 seconds of inactivity
         const timeout = setTimeout(() => {
           setIsVisible(false);
         }, 3000);
 
         setHideTimeout(timeout);
-      } else {
-        setIsVisible(false);
-        if (hideTimeout) {
-          clearTimeout(hideTimeout);
-        }
       }
 
       setLastScrollY(currentScrollY);
     };
 
+    // Only add scroll listener on mobile
     if (window.innerWidth < 768) {
       window.addEventListener("scroll", handleScroll);
 
+      // Set initial timeout
       const timeout = setTimeout(() => {
         setIsVisible(false);
       }, 3000);
@@ -81,7 +80,7 @@ const Sidebar = () => {
         onClick={handleMouseEnter}
         className={`
           fixed left-0 top-1/2 -translate-y-1/2 z-50
-          bg-white rounded-r-lg shadow-lg p-1
+          bg-white rounded-r-lg shadow-lg p-2
           transition-all duration-300 ease-in-out
           md:hidden
           ${isVisible ? "opacity-0 -translate-x-full pointer-events-none" : "opacity-100 translate-x-0"}
@@ -109,8 +108,8 @@ const Sidebar = () => {
           fixed left-2 top-1/2 -translate-y-1/2 z-50
           flex flex-col gap-1 pl-1
           transition-all duration-300 ease-in-out
-          md:w-64 md:translate-x-0 md:opacity-100
-          ${isVisible ? "w-14 translate-x-0 opacity-100" : "w-14 -translate-x-16 opacity-0"}
+          w-64 md:w-64 md:translate-x-0 md:opacity-100
+          ${isVisible ? "translate-x-0 opacity-100" : "-translate-x-56 opacity-0"}
         `}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
