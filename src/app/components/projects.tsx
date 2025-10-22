@@ -48,9 +48,9 @@ const projects = [
 ];
 
 export default function Projects() {
-  const [openIndex, setOpenIndex] = useState(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [openIndex, setOpenIndex] = useState<number|null>(null);
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
 
   const toggle = (index:number) => {
     if (openIndex === index) {
@@ -62,11 +62,11 @@ export default function Projects() {
     }
   };
 
-  const nextSlide = (mediaLength) => {
+  const nextSlide = (mediaLength:number) => {
     setCurrentSlide((prev) => (prev + 1) % mediaLength);
   };
 
-  const prevSlide = (mediaLength) => {
+  const prevSlide = (mediaLength:number) => {
     setCurrentSlide((prev) => (prev - 1 + mediaLength) % mediaLength);
   };
 
