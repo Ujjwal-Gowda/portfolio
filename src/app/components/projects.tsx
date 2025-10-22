@@ -52,7 +52,7 @@ export default function Projects() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const toggle = (index) => {
+  const toggle = (index:number) => {
     if (openIndex === index) {
       setOpenIndex(null);
       setCurrentSlide(0);
