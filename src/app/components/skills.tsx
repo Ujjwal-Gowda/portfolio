@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -26,15 +25,10 @@ const skillCategories = [
     ],
   },
   {
-    title: "Databases",
+    title: "Databases & Tools",
     skills: [
       { name: "MongoDB", image: "/icons/mongodb.svg" },
       { name: "PostgreSQL", image: "/icons/postgresql.svg" },
-    ],
-  },
-  {
-    title: "Tools / Platforms",
-    skills: [
       { name: "Git", image: "/icons/git.svg" },
       { name: "Linux", image: "/icons/linux.svg" },
     ],
@@ -56,50 +50,49 @@ export default function SkillsMasonry() {
   }, []);
 
   return (
-    <section className="min-h-screen py-12 sm:py-20 px-4 sm:px-6 bg-[#111] text-white">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl sm:text-5xl font-bold mb-3 sm:mb-4 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text">
-          My Skills
-        </h2>
-        <p className="text-sm sm:text-base text-gray-400 text-center mb-8 sm:mb-12 max-w-2xl mx-auto">
-          The tools and technologies I use to design, build, and deploy
-          full-stack applications.
-        </p>
+    <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+            My Skills
+          </h2>
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            The tools and technologies I use to design, build, and deploy
+            full-stack applications.
+          </p>
+        </div>
         {/* Masonry Layout */}
         <div
-          className="masonry"
+          className="grid gap-4 sm:gap-6"
           style={{
-            columnCount: columns,
-            columnGap: columns === 1 ? "0" : "1.5rem",
+            gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
           }}
         >
           {skillCategories.map((category, index) => (
-            <div key={index} className="break-inside-avoid mb-6 sm:mb-8">
-              <h3 className="text-lg sm:text-2xl font-semibold mb-3 sm:mb-4 text-blue-400">
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow"
+            >
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 pb-2 border-b border-gray-200">
                 {category.title}
               </h3>
               {category.skills.map((skill, i) => (
                 <div
                   key={i}
-                  className="group bg-gradient-to-br from-gray-800/80 to-gray-900/80
-                    border border-gray-700/50 p-3 sm:p-6 rounded-xl sm:rounded-2xl mb-3 sm:mb-4
-                    hover:border-blue-500/50 hover:shadow-blue-500/20
-                    transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm"
+                  className="flex items-center gap-3 py-2 sm:py-2.5 px-2 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="relative w-8 h-8 sm:w-12 sm:h-12">
-                      <Image
-                        src={skill.image}
-                        alt={skill.name}
-                        fill
-                        sizes="(max-width: 640px) 32px, 48px"
-                        className="object-contain group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <h4 className="text-base sm:text-xl font-semibold group-hover:text-blue-400 transition-colors">
-                      {skill.name}
-                    </h4>
+                  <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-50 rounded-lg">
+                    <Image
+                      src={skill.image}
+                      alt={skill.name}
+                      width={28}
+                      height={28}
+                      className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
+                    />
                   </div>
+                  <span className="text-sm sm:text-base font-medium text-gray-700">
+                    {skill.name}
+                  </span>
                 </div>
               ))}
             </div>
