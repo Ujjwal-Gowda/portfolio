@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import image from "next/image"
 export default function CardSlides() {
   const router = useRouter();
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const cards = [
     {
@@ -56,16 +56,14 @@ export default function CardSlides() {
             >
               {/* Image Container */}
               <div className="absolute inset-0 overflow-hidden">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="w-full h-full object-cover transition-all duration-700 ease-out"
-                  style={{
-                    filter: hoveredIndex === index ? "brightness(110%)" : "brightness(85%)",
-                    transform: hoveredIndex === index ? "scale(1.15)" : "scale(1)",
-                  }}
-                />
-              </div>
+                             </div>
+<Image
+  src={card.image}
+  alt={card.title}
+  fill
+  className="object-cover"
+  sizes="(max-width: 768px) 100vw, 340px"
+/>
 
               {/* Subtle Vignette (top and sides only) */}
               <div 
@@ -153,13 +151,14 @@ export default function CardSlides() {
             >
               {/* Image */}
               <div className="absolute inset-0 overflow-hidden">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="w-full h-full object-cover"
-                  style={{ filter: "brightness(85%)" }}
-                />
               </div>
+<Image
+  src={card.image}
+  alt={card.title}
+  fill
+  className="object-cover"
+  sizes="(max-width: 768px) 100vw, 340px"
+/>
 
               {/* Vignette */}
               <div 
