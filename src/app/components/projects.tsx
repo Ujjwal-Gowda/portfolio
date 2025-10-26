@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -48,25 +48,72 @@ const projects = [
 ];
 
 export default function Projects() {
-  const [openIndex, setOpenIndex] = useState<number|null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const toggle = (index:number) => {
-    if (openIndex === index) {
-      setOpenIndex(null);
-      setCurrentSlide(0);
-    } else {
+  // Detect mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Scroll observer for mobile
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = projectRefs.current.indexOf(
+              entry.target as HTMLDivElement,
+            );
+            if (index !== -1) {
+              setOpenIndex(index);
+              setCurrentSlide(0);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.6, // Open when 60% visible
+        rootMargin: "-10% 0px -10% 0px",
+      },
+    );
+
+    projectRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  const handleMouseEnter = (index: number) => {
+    if (!isMobile) {
       setOpenIndex(index);
       setCurrentSlide(0);
     }
   };
 
-  const nextSlide = (mediaLength:number) => {
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setOpenIndex(null);
+      setCurrentSlide(0);
+    }
+  };
+
+  const nextSlide = (mediaLength: number) => {
     setCurrentSlide((prev) => (prev + 1) % mediaLength);
   };
 
-  const prevSlide = (mediaLength:number) => {
+  const prevSlide = (mediaLength: number) => {
     setCurrentSlide((prev) => (prev - 1 + mediaLength) % mediaLength);
   };
 
@@ -91,8 +138,12 @@ export default function Projects() {
         {projects.map((project, index) => (
           <div
             key={index}
-            className="border-b border-gray-700 pb-2 cursor-pointer"
-            onClick={() => toggle(index)}
+            ref={(el) => {
+              projectRefs.current[index] = el;
+            }}
+            className="border-b border-gray-700 pb-2"
+            onMouseEnter={() => handleMouseEnter(index)}
+            onMouseLeave={handleMouseLeave}
           >
             {/* Header row */}
             <div className="flex justify-between items-center py-2 sm:py-3 gap-2">
@@ -185,11 +236,10 @@ export default function Projects() {
                               e.stopPropagation();
                               setCurrentSlide(i);
                             }}
-                            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${
-                              currentSlide === i
+                            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${currentSlide === i
                                 ? "bg-white scale-110"
                                 : "bg-gray-500/50 hover:bg-gray-300"
-                            }`}
+                              }`}
                             aria-label={`Go to slide ${i + 1}`}
                           ></button>
                         ))}
@@ -214,9 +264,7 @@ export default function Projects() {
       </div>
 
       <button
-        onClick={() =>
-          window.open("https://github.com/ujjwal-gowda", "_blank")
-        }
+        onClick={() => window.open("https://github.com/ujjwal-gowda", "_blank")}
         className="mt-8 sm:mt-10 px-4 sm:px-5 py-2 border border-gray-500 text-gray-300 rounded-full text-xs sm:text-sm hover:bg-gray-800 hover:border-gray-400 active:scale-95 transition-all"
       >
         Git Hub →
