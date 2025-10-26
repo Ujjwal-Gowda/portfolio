@@ -8,7 +8,7 @@ const projects = [
     title: "Wallpaper App",
     category: "Web Dev",
     description:
-      "A Pintrest inspired Wallpaper App built with React, Tailwind, and Unsplash API. User friendly and a modern UI.",
+      "A Pinterest-inspired Wallpaper App built with React, Tailwind, and Unsplash API. Modern, clean, and user-friendly.",
     media: [
       { type: "image", src: "/images/wall.png" },
       { type: "image", src: "/images/wall2.png" },
@@ -19,9 +19,9 @@ const projects = [
   },
   {
     title: "Chat-App",
-    category: "web dev",
+    category: "Web Dev",
     description:
-      "A Chat App built with React, Tailwind, socket.io and daisyui. User friendly and a modern UI.",
+      "A chat application using React, Tailwind, Socket.io, and DaisyUI with a sleek real-time interface.",
     media: [
       { type: "image", src: "/images/chat1.png" },
       { type: "image", src: "/images/chat2.png" },
@@ -32,9 +32,9 @@ const projects = [
   },
   {
     title: "Audio Player",
-    category: "web dev",
+    category: "Web Dev",
     description:
-      "A Audio Player built with React, Tailwind and spotify web api . A minimalistic approach to elevate the user experience.",
+      "A Spotify-inspired Audio Player built with React, Tailwind, and the Spotify Web API. Minimal and elegant.",
     media: [
       { type: "image", src: "/images/play1.png" },
       { type: "image", src: "/images/play2.png" },
@@ -53,37 +53,43 @@ export default function Projects() {
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Detect mobile
+  // Detect mobile layout
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Scroll observer for mobile
+  // Smooth mobile scroll-based open/close
   useEffect(() => {
     if (!isMobile) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = projectRefs.current.indexOf(
-              entry.target as HTMLDivElement,
-            );
-            if (index !== -1) {
-              setOpenIndex(index);
-              setCurrentSlide(0);
-            }
+          const index = projectRefs.current.indexOf(
+            entry.target as HTMLDivElement,
+          );
+
+          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+            // Cancel any pending close
+            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+            setOpenIndex(index);
+            setCurrentSlide(0);
+          } else if (!entry.isIntersecting && openIndex === index) {
+            // Small delay before closing for smoother UX
+            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = setTimeout(() => {
+              setOpenIndex(null);
+            }, 350);
           }
         });
       },
       {
-        threshold: 0.6, // Open when 60% visible
+        threshold: [0.3, 0.5, 0.7],
         rootMargin: "-10% 0px -10% 0px",
       },
     );
@@ -92,8 +98,11 @@ export default function Projects() {
       if (ref) observer.observe(ref);
     });
 
-    return () => observer.disconnect();
-  }, [isMobile]);
+    return () => {
+      observer.disconnect();
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    };
+  }, [isMobile, openIndex]);
 
   const handleMouseEnter = (index: number) => {
     if (!isMobile) {
@@ -109,44 +118,38 @@ export default function Projects() {
     }
   };
 
-  const nextSlide = (mediaLength: number) => {
+  const nextSlide = (mediaLength: number) =>
     setCurrentSlide((prev) => (prev + 1) % mediaLength);
-  };
 
-  const prevSlide = (mediaLength: number) => {
+  const prevSlide = (mediaLength: number) =>
     setCurrentSlide((prev) => (prev - 1 + mediaLength) % mediaLength);
-  };
 
-  // Auto-play logic
+  // Auto-play slides when open
   useEffect(() => {
     if (openIndex === null || isPaused) return;
     const mediaLength = projects[openIndex].media.length;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % mediaLength);
     }, 4000);
-
     return () => clearInterval(timer);
   }, [openIndex, isPaused]);
 
   return (
-    <section className="min-h-screen flex flex-col items-center py-8 sm:py-12 md:py-16 justify-center bg-[#111] px-4 sm:px-6">
-      <h2 className="text-xs sm:text-sm tracking-widest text-gray-300 mb-4 sm:mb-6">
+    <section className="min-h-screen flex flex-col items-center py-10 sm:py-16 bg-[#111] px-4 sm:px-6">
+      <h2 className="text-xs sm:text-sm tracking-widest text-gray-400 mb-6 sm:mb-8">
         RECENT PROJECTS
       </h2>
 
-      <div className="w-full max-w-3xl space-y-2 sm:space-y-3">
+      <div className="w-full max-w-3xl space-y-3 sm:space-y-4">
         {projects.map((project, index) => (
           <div
             key={index}
-            ref={(el) => {
-              projectRefs.current[index] = el;
-            }}
+            ref={(el) => (projectRefs.current[index] = el)}
             className="border-b border-gray-700 pb-2"
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Header row */}
-            <div className="flex justify-between items-center py-2 sm:py-3 gap-2">
+            <div className="flex justify-between items-center py-3">
               <p className="text-white font-medium text-sm sm:text-base">
                 {project.title}
               </p>
@@ -155,18 +158,18 @@ export default function Projects() {
               </span>
             </div>
 
-            {/* Drop-down content */}
             <AnimatePresence>
               {openIndex === index && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.4 }}
+                  key={index}
+                  initial={{ height: 0, opacity: 0, y: -10 }}
+                  animate={{ height: "auto", opacity: 1, y: 0 }}
+                  exit={{ height: 0, opacity: 0, y: -10 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="overflow-hidden text-white"
                 >
                   <div
-                    className="py-3 sm:py-4 space-y-3 sm:space-y-4"
+                    className="py-4 space-y-4"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                     onTouchStart={() => setIsPaused(true)}
@@ -176,8 +179,7 @@ export default function Projects() {
                       {project.description}
                     </p>
 
-                    {/* Carousel */}
-                    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl shadow-md">
+                    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl shadow-lg">
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={currentSlide}
@@ -185,7 +187,6 @@ export default function Projects() {
                           animate={{ x: 0, opacity: 1 }}
                           exit={{ x: -100, opacity: 0 }}
                           transition={{ duration: 0.5 }}
-                          className="w-full"
                         >
                           {project.media[currentSlide].type === "image" ? (
                             <Image
@@ -205,14 +206,13 @@ export default function Projects() {
                         </motion.div>
                       </AnimatePresence>
 
-                      {/* Navigation buttons */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           prevSlide(project.media.length);
                         }}
-                        className="absolute top-1/2 left-2 sm:left-3 -translate-y-1/2 bg-black/50 hover:bg-black/70 active:bg-black/80 text-white p-1.5 sm:p-2 rounded-full transition-all text-lg sm:text-xl"
-                        aria-label="Previous slide"
+                        className="absolute top-1/2 left-2 sm:left-3 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full text-lg sm:text-xl transition"
+                        aria-label="Previous"
                       >
                         ‹
                       </button>
@@ -221,14 +221,13 @@ export default function Projects() {
                           e.stopPropagation();
                           nextSlide(project.media.length);
                         }}
-                        className="absolute top-1/2 right-2 sm:right-3 -translate-y-1/2 bg-black/50 hover:bg-black/70 active:bg-black/80 text-white p-1.5 sm:p-2 rounded-full transition-all text-lg sm:text-xl"
-                        aria-label="Next slide"
+                        className="absolute top-1/2 right-2 sm:right-3 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full text-lg sm:text-xl transition"
+                        aria-label="Next"
                       >
                         ›
                       </button>
 
-                      {/* Dots */}
-                      <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2">
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
                         {project.media.map((_, i) => (
                           <button
                             key={i}
@@ -236,11 +235,10 @@ export default function Projects() {
                               e.stopPropagation();
                               setCurrentSlide(i);
                             }}
-                            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${currentSlide === i
+                            className={`w-2 h-2 rounded-full transition-all ${currentSlide === i
                                 ? "bg-white scale-110"
                                 : "bg-gray-500/50 hover:bg-gray-300"
                               }`}
-                            aria-label={`Go to slide ${i + 1}`}
                           ></button>
                         ))}
                       </div>
@@ -250,7 +248,7 @@ export default function Projects() {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs sm:text-sm text-blue-400 hover:text-blue-300 hover:underline block transition-colors"
+                      className="text-xs sm:text-sm text-blue-400 hover:text-blue-300 hover:underline block"
                       onClick={(e) => e.stopPropagation()}
                     >
                       View Project →
@@ -265,9 +263,9 @@ export default function Projects() {
 
       <button
         onClick={() => window.open("https://github.com/ujjwal-gowda", "_blank")}
-        className="mt-8 sm:mt-10 px-4 sm:px-5 py-2 border border-gray-500 text-gray-300 rounded-full text-xs sm:text-sm hover:bg-gray-800 hover:border-gray-400 active:scale-95 transition-all"
+        className="mt-10 px-5 py-2 border border-gray-600 text-gray-300 rounded-full text-sm hover:bg-gray-800 hover:border-gray-400 transition-all active:scale-95"
       >
-        Git Hub →
+        GitHub →
       </button>
     </section>
   );
