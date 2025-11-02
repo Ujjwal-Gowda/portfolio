@@ -206,15 +206,11 @@ export default function CardSlides() {
 
               {/* Tag */}
               <div className="absolute top-3 right-3 bg-black border-2 border-black px-3 py-1 z-20">
-                <span className="text-white font-black text-xs uppercase">
-                  {card.tag}
-                </span>
+                <span className="text-white font-black text-xs uppercase"></span>
               </div>
 
               {/* Content */}
               <div className="absolute inset-0 p-5 flex flex-col justify-between z-10">
-                <div className="text-4xl">{card.emoji}</div>
-
                 <div
                   className="bg-white border-4 border-black p-3"
                   style={{ boxShadow: `4px 4px 0px 0px ${card.color}` }}

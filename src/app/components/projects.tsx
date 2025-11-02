@@ -95,6 +95,7 @@ export default function Projects() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const scrollPositionRef = useRef<number>(0);
 
   useEffect(() => {
@@ -248,7 +249,9 @@ export default function Projects() {
         {projects.map((project, index) => (
           <div
             key={index}
-            ref={(el) => (projectRefs.current[index] = el)}
+            ref={(el) => {
+              projectRefs.current[index] = el;
+            }}
             className="border-4 overflow-hidden transition-all duration-500 cursor-pointer relative"
             style={{
               borderColor: "#000",
