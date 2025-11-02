@@ -1,14 +1,23 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 
-const projects = [
+interface Project {
+  title: string;
+  category: string;
+  description: string;
+  color: string;
+  media: { type: "image" | "video"; src: string }[];
+  link: string;
+  tags?: string[];
+}
+
+const projects: Project[] = [
   {
     title: "Wallpaper App",
     category: "Web Dev",
     description:
       "A Pinterest-inspired Wallpaper App built with React, Tailwind, and Unsplash API. Modern, clean, and user-friendly.",
+    color: "#b7c9f2",
     media: [
       { type: "image", src: "/images/wall.png" },
       { type: "image", src: "/images/wall2.png" },
@@ -16,12 +25,14 @@ const projects = [
       { type: "image", src: "/images/wall4.png" },
     ],
     link: "https://wallpaper-app-frontend.vercel.app/",
+    tags: ["React", "Tailwind", "API"],
   },
   {
-    title: "Chat-App",
+    title: "Chat App",
     category: "Web Dev",
     description:
       "A chat application using React, Tailwind, Socket.io, and DaisyUI with a sleek real-time interface.",
+    color: "#ffd4e5",
     media: [
       { type: "image", src: "/images/chat1.png" },
       { type: "image", src: "/images/chat2.png" },
@@ -29,33 +40,63 @@ const projects = [
       { type: "image", src: "/images/chat4.png" },
     ],
     link: "https://chat-app-od00.onrender.com/",
+    tags: ["Socket.io", "Real-time", "React"],
+  },
+  {
+    title: "Task Manager",
+    category: "Web Dev",
+    description:
+      "A Spotify-inspired Audio Player built with React, Tailwind, and the Spotify Web API. Minimal and elegant.",
+    color: "#c7f0db",
+    media: [
+      { type: "image", src: "/images/task1.png" },
+      { type: "image", src: "/images/task2.png" },
+      { type: "image", src: "/images/task3.png" },
+    ],
+    link: "https://task-management-beige-chi.vercel.app/",
+    tags: ["Spotify API", "Music", "React"],
+  },
+  {
+    title: "E-com Cart",
+    category: "Web Dev",
+    description:
+      "A Spotify-inspired Audio Player built with React, Tailwind, and the Spotify Web API. Minimal and elegant.",
+    color: "#fde4cf",
+    media: [
+      { type: "image", src: "/images/ecart1.png" },
+      { type: "image", src: "/images/ecart2.png" },
+    ],
+    link: "https://e-cart-peach-psi.vercel.app/",
+    tags: ["Spotify API", "Music", "React"],
   },
   {
     title: "Audio Player",
     category: "Web Dev",
     description:
       "A Spotify-inspired Audio Player built with React, Tailwind, and the Spotify Web API. Minimal and elegant.",
+    color: "#e5d4f7",
     media: [
       { type: "image", src: "/images/play1.png" },
       { type: "image", src: "/images/play2.png" },
       { type: "image", src: "/images/play3.png" },
       { type: "image", src: "/images/play4.png" },
-      { type: "image", src: "/images/play5.png" },
-      { type: "image", src: "/images/play6.png" },
     ],
     link: "https://audio-player-five-coral.vercel.app/",
+    tags: ["Spotify API", "Music", "React"],
   },
 ];
 
 export default function Projects() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [currentSlides, setCurrentSlides] = useState<number[]>(
+    projects.map(() => 0),
+  );
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const scrollPositionRef = useRef<number>(0);
 
-  // Detect mobile layout
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
@@ -63,207 +104,373 @@ export default function Projects() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Smooth mobile scroll-based open/close
+  // Center opened project or restore scroll position on close
   useEffect(() => {
-    if (!isMobile) return;
+    if (openIndex !== null && projectRefs.current[openIndex]) {
+      scrollPositionRef.current = window.scrollY;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const index = projectRefs.current.indexOf(
-            entry.target as HTMLDivElement,
-          );
-
-          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-            // Cancel any pending close
-            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-            setOpenIndex(index);
-            setCurrentSlide(0);
-          } else if (!entry.isIntersecting && openIndex === index) {
-            // Small delay before closing for smoother UX
-            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-            closeTimeoutRef.current = setTimeout(() => {
-              setOpenIndex(null);
-            }, 350);
-          }
+      setTimeout(() => {
+        projectRefs.current[openIndex]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
         });
-      },
-      {
-        threshold: [0.3, 0.5, 0.7],
-        rootMargin: "-10% 0px -10% 0px",
-      },
-    );
+      }, 400);
+    } else if (openIndex === null && scrollPositionRef.current !== 0) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollPositionRef.current,
+          behavior: "smooth",
+        });
+      }, 100);
+    }
+  }, [openIndex]);
+  // Center opened project (desktop only, mobile handles in handleClick)
+  useEffect(() => {
+    if (openIndex !== null && projectRefs.current[openIndex] && !isMobile) {
+      scrollPositionRef.current = window.scrollY;
 
-    projectRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
+      setTimeout(() => {
+        projectRefs.current[openIndex]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 400);
+    } else if (
+      openIndex === null &&
+      scrollPositionRef.current !== 0 &&
+      !isMobile
+    ) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollPositionRef.current,
+          behavior: "smooth",
+        });
+      }, 100);
+    }
+  }, [openIndex, isMobile]);
 
-    return () => {
-      observer.disconnect();
-      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-    };
-  }, [isMobile, openIndex]);
+  const handleClick = (index: number) => {
+    if (openIndex === index) {
+      setOpenIndex(null);
+    } else {
+      setOpenIndex(index);
+      setCurrentSlides((prev) => {
+        const newSlides = [...prev];
+        newSlides[index] = 0;
+        return newSlides;
+      });
 
-  const handleMouseEnter = (index: number) => {
+      // Scroll to center on mobile after a short delay
+      if (isMobile) {
+        setTimeout(() => {
+          projectRefs.current[index]?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }, 300);
+      }
+    }
+  };
+
+  const handleHover = (index: number) => {
     if (!isMobile) {
       setOpenIndex(index);
-      setCurrentSlide(0);
+      setCurrentSlides((prev) => {
+        const newSlides = [...prev];
+        newSlides[index] = 0;
+        return newSlides;
+      });
     }
   };
 
-  const handleMouseLeave = () => {
+  const handleLeave = () => {
     if (!isMobile) {
       setOpenIndex(null);
-      setCurrentSlide(0);
     }
   };
 
-  const nextSlide = (mediaLength: number) =>
-    setCurrentSlide((prev) => (prev + 1) % mediaLength);
+  const nextSlide = (
+    index: number,
+    mediaLength: number,
+    e: React.MouseEvent,
+  ) => {
+    e.stopPropagation();
+    setCurrentSlides((prev) => {
+      const newSlides = [...prev];
+      newSlides[index] = (newSlides[index] + 1) % mediaLength;
+      return newSlides;
+    });
+  };
 
-  const prevSlide = (mediaLength: number) =>
-    setCurrentSlide((prev) => (prev - 1 + mediaLength) % mediaLength);
-
-  // Auto-play slides when open
-  useEffect(() => {
-    if (openIndex === null || isPaused) return;
-    const mediaLength = projects[openIndex].media.length;
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % mediaLength);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [openIndex, isPaused]);
+  const prevSlide = (
+    index: number,
+    mediaLength: number,
+    e: React.MouseEvent,
+  ) => {
+    e.stopPropagation();
+    setCurrentSlides((prev) => {
+      const newSlides = [...prev];
+      newSlides[index] = (newSlides[index] - 1 + mediaLength) % mediaLength;
+      return newSlides;
+    });
+  };
 
   return (
-    <section className="min-h-screen flex flex-col items-center py-10 sm:py-16 bg-[#111] px-4 sm:px-6">
-      <h2 className="text-xs sm:text-sm tracking-widest text-gray-400 mb-6 sm:mb-8">
-        RECENT PROJECTS
-      </h2>
+    <section
+      ref={sectionRef}
+      className="min-h-screen flex flex-col items-center py-16 px-4"
+      style={{ backgroundColor: "#f3f1f0" }}
+    >
+      {/* Header */}
+      <div className="mb-16 text-center">
+        <div
+          className="inline-block border-4 px-6 py-2 mb-4 transform -rotate-1"
+          style={{
+            backgroundColor: "#b7c9f2",
+            borderColor: "#000",
+            boxShadow: "6px 6px 0 #000",
+          }}
+        >
+          <p className="font-black text-xs sm:text-sm tracking-widest text-black">
+            ⚡ RECENT PROJECTS ⚡
+          </p>
+        </div>
+        <h2
+          className="text-5xl sm:text-7xl font-black uppercase"
+          style={{ color: "#111", textShadow: "4px 4px 0 #f5b5c5" }}
+        >
+          My Work
+        </h2>
+      </div>
 
-      <div className="w-full max-w-3xl space-y-3 sm:space-y-4">
+      {/* Projects */}
+      <div className="w-full max-w-5xl space-y-8">
         {projects.map((project, index) => (
           <div
             key={index}
             ref={(el) => (projectRefs.current[index] = el)}
-            className="border-b border-gray-700 pb-2"
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={handleMouseLeave}
+            className="border-4 overflow-hidden transition-all duration-500 cursor-pointer relative"
+            style={{
+              borderColor: "#000",
+              backgroundColor: "#fff",
+              boxShadow:
+                openIndex === index ? "12px 12px 0 #000" : "8px 8px 0 #000",
+              transform: openIndex === index ? "scale(1.02)" : "scale(1)",
+            }}
+            onClick={() => handleClick(index)}
+            onMouseEnter={() => handleHover(index)}
+            onMouseLeave={handleLeave}
           >
-            <div className="flex justify-between items-center py-3">
-              <p className="text-white font-medium text-sm sm:text-base">
-                {project.title}
-              </p>
-              <span className="text-gray-500 text-xs sm:text-sm whitespace-nowrap">
-                {project.category}
-              </span>
+            {/* Right Side Stripes */}
+            <div className="absolute top-0 right-0 h-full flex items-stretch pointer-events-none">
+              <div
+                className="w-3 sm:w-4 border-l-4 border-black transition-all duration-500"
+                style={{
+                  backgroundColor: openIndex === index ? "#fff" : project.color,
+                  opacity: openIndex === index ? 0 : 1,
+                }}
+              />
+              <div
+                className="w-6 sm:w-8 border-l-4 border-black transition-all duration-500"
+                style={{
+                  backgroundColor: openIndex === index ? project.color : "#fff",
+                  opacity: openIndex === index ? 0 : 1,
+                }}
+              />
+            </div>
+            {/* Project Header */}
+            <div
+              className="flex justify-between items-center p-5 sm:p-6 transition-all duration-500"
+              style={{
+                backgroundColor: openIndex === index ? project.color : "#fff",
+              }}
+            >
+              <div className="flex items-center gap-4 flex-1">
+                {/* Plus Icon */}
+                <div
+                  className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 border-4 border-black flex items-center justify-center font-black text-3xl transition-all duration-500"
+                  style={{
+                    backgroundColor: "#fff",
+                    transform:
+                      openIndex === index ? "rotate(45deg)" : "rotate(0deg)",
+                  }}
+                >
+                  +
+                </div>
+
+                {/* Title & Category */}
+                <div className="flex-1">
+                  <h3 className="font-black text-xl sm:text-2xl uppercase text-black leading-tight">
+                    {project.title}
+                  </h3>
+                  <span
+                    className="text-black font-bold text-xs uppercase border-2 border-black px-2 py-1 inline-block mt-2"
+                    style={{
+                      backgroundColor:
+                        openIndex === index ? "#fff" : project.color,
+                    }}
+                  >
+                    {project.category}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <AnimatePresence>
-              {openIndex === index && (
-                <motion.div
-                  key={index}
-                  initial={{ height: 0, opacity: 0, y: -10 }}
-                  animate={{ height: "auto", opacity: 1, y: 0 }}
-                  exit={{ height: 0, opacity: 0, y: -10 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="overflow-hidden text-white"
-                >
-                  <div
-                    className="py-4 space-y-4"
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                    onTouchStart={() => setIsPaused(true)}
-                    onTouchEnd={() => setIsPaused(false)}
-                  >
-                    <p className="text-sm sm:text-base text-gray-300">
-                      {project.description}
-                    </p>
+            {/* Expanded Content */}
+            <div
+              className="overflow-hidden transition-all duration-700 ease-in-out"
+              style={{
+                maxHeight: openIndex === index ? "2000px" : "0px",
+                opacity: openIndex === index ? 1 : 0,
+              }}
+            >
+              <div
+                className="border-t-4 border-black p-6 sm:p-8 space-y-6"
+                style={{ backgroundColor: "#fafafa" }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Description */}
+                <p className="text-gray-700 text-base sm:text-lg leading-relaxed font-medium">
+                  {project.description}
+                </p>
 
-                    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl shadow-lg">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={currentSlide}
-                          initial={{ x: 100, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          exit={{ x: -100, opacity: 0 }}
-                          transition={{ duration: 0.5 }}
-                        >
-                          {project.media[currentSlide].type === "image" ? (
-                            <Image
-                              src={project.media[currentSlide].src}
-                              alt={`${project.title}-${currentSlide}`}
-                              width={800}
-                              height={450}
-                              className="w-full h-auto object-cover rounded-xl sm:rounded-2xl"
-                            />
-                          ) : (
-                            <video
-                              src={project.media[currentSlide].src}
-                              controls
-                              className="w-full rounded-xl sm:rounded-2xl"
-                            />
-                          )}
-                        </motion.div>
-                      </AnimatePresence>
+                {/* Tags */}
+                {project.tags && (
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="text-xs font-bold uppercase px-3 py-1 border-2 border-black"
+                        style={{ backgroundColor: project.color }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
+                {/* Media Carousel */}
+                <div className="relative border-4 border-black overflow-hidden bg-black">
+                  <div className="relative">
+                    {project.media[currentSlides[index]].type === "image" ? (
+                      <img
+                        src={project.media[currentSlides[index]].src}
+                        alt={`${project.title} - ${currentSlides[index] + 1}`}
+                        className="w-full h-auto object-cover"
+                      />
+                    ) : (
+                      <video
+                        src={project.media[currentSlides[index]].src}
+                        controls
+                        className="w-full"
+                      />
+                    )}
+                  </div>
+
+                  {/* Navigation Arrows */}
+                  {project.media.length > 1 && (
+                    <>
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          prevSlide(project.media.length);
+                        onClick={(e) =>
+                          prevSlide(index, project.media.length, e)
+                        }
+                        className="absolute top-1/2 left-3 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 border-4 border-black font-black text-2xl flex items-center justify-center transition-all hover:scale-110"
+                        style={{
+                          backgroundColor: project.color,
+                          boxShadow: "4px 4px 0 #000",
                         }}
-                        className="absolute top-1/2 left-2 sm:left-3 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full text-lg sm:text-xl transition"
-                        aria-label="Previous"
                       >
                         ‹
                       </button>
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          nextSlide(project.media.length);
+                        onClick={(e) =>
+                          nextSlide(index, project.media.length, e)
+                        }
+                        className="absolute top-1/2 right-3 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 border-4 border-black font-black text-2xl flex items-center justify-center transition-all hover:scale-110"
+                        style={{
+                          backgroundColor: project.color,
+                          boxShadow: "4px 4px 0 #000",
                         }}
-                        className="absolute top-1/2 right-2 sm:right-3 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full text-lg sm:text-xl transition"
-                        aria-label="Next"
                       >
                         ›
                       </button>
+                    </>
+                  )}
 
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-                        {project.media.map((_, i) => (
-                          <button
-                            key={i}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setCurrentSlide(i);
-                            }}
-                            className={`w-2 h-2 rounded-full transition-all ${currentSlide === i
-                                ? "bg-white scale-110"
-                                : "bg-gray-500/50 hover:bg-gray-300"
-                              }`}
-                          ></button>
-                        ))}
-                      </div>
+                  {/* Slide Indicators */}
+                  {project.media.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                      {project.media.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentSlides((prev) => {
+                              const newSlides = [...prev];
+                              newSlides[index] = i;
+                              return newSlides;
+                            });
+                          }}
+                          className="border-2 border-black transition-all"
+                          style={{
+                            backgroundColor:
+                              currentSlides[index] === i
+                                ? project.color
+                                : "#fff",
+                            width:
+                              currentSlides[index] === i ? "2rem" : "0.75rem",
+                            height: "0.75rem",
+                          }}
+                        />
+                      ))}
                     </div>
+                  )}
+                </div>
 
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs sm:text-sm text-blue-400 hover:text-blue-300 hover:underline block"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      View Project →
-                    </a>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                {/* View Project Button */}
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-black border-4 border-black px-6 sm:px-8 py-3 sm:py-4 font-black text-sm sm:text-base uppercase transition-all hover:translate-x-1 hover:translate-y-1"
+                  style={{
+                    backgroundColor: project.color,
+                    boxShadow: "6px 6px 0 #000",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.boxShadow = "0px 0px 0 #000")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.boxShadow = "6px 6px 0 #000")
+                  }
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  View Project →
+                </a>
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
+      {/* GitHub Button */}
       <button
         onClick={() => window.open("https://github.com/ujjwal-gowda", "_blank")}
-        className="mt-10 px-5 py-2 border border-gray-600 text-gray-300 rounded-full text-sm hover:bg-gray-800 hover:border-gray-400 transition-all active:scale-95"
+        className="mt-16 border-4 font-black px-8 py-4 text-base sm:text-lg uppercase transition-all hover:translate-x-1 hover:translate-y-1"
+        style={{
+          backgroundColor: "#a8edea",
+          borderColor: "#000",
+          color: "#111",
+          boxShadow: "8px 8px 0 #000",
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.boxShadow = "0px 0px 0 #000")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.boxShadow = "8px 8px 0 #000")
+        }
       >
         GitHub →
       </button>

@@ -1,94 +1,103 @@
 "use client";
-
-import React, { useEffect } from "react";
-import { motion } from "framer-motion";
-import { Typewriter } from "react-simple-typewriter";
+import React, { useEffect, useState } from "react";
 
 export default function HeroSection() {
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const fullText = "UJJWAL";
+
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
-      "https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap";
+      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
 
+  useEffect(() => {
+    let timeout;
+
+    if (!isDeleting && displayText === fullText) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && displayText === "") {
+      timeout = setTimeout(() => setIsDeleting(false), 500);
+    } else {
+      const speed = isDeleting ? 50 : 120;
+      timeout = setTimeout(() => {
+        setDisplayText((prev) =>
+          isDeleting ? prev.slice(0, -1) : fullText.slice(0, prev.length + 1),
+        );
+      }, speed);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting]);
+
   return (
-    <section className="min-h-screen bg-[#111] flex items-center justify-center px-4 sm:px-6 md:px-10 text-white">
-      <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-12 lg:gap-32 items-center">
-        {/* Left Side - Text */}
-        <div className="text-center lg:text-left space-y-4 sm:space-y-6">
-          {/* Top Text */}
-          <motion.h2
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-            style={{
-              fontFamily: "'Oswald', sans-serif",
-              fontWeight: 300,
-              letterSpacing: "0.05em",
-            }}
+    <section
+      className="min-h-screen flex items-center justify-center px-4 sm:px-6 md:px-10 relative overflow-hidden"
+      style={{
+        fontFamily: "'Space Grotesk', sans-serif",
+        backgroundColor: "#f3f1f0",
+        color: "#111",
+      }}
+    >
+      <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
+        <div className="text-center lg:text-left space-y-6 sm:space-y-8">
+          <h2
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight border-4 border-black bg-[#a3c4f3] text-black inline-block px-6 py-3 transform -rotate-1"
+            style={{ boxShadow: "6px 6px 0px 0px #111" }}
           >
             FULL STACK
-          </motion.h2>
+          </h2>
 
-          {/* Main Highlight */}
-          <motion.h1
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-orange-600 leading-none"
+          <h1
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl font-black leading-none uppercase tracking-tighter text-black"
             style={{
-              fontFamily: "'Oswald', sans-serif",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
+              textShadow: "6px 6px 0px #ffb3c6",
             }}
           >
             DEVELOPER
-          </motion.h1>
+          </h1>
+          <div className="space-y-4 mt-8">
+            <p className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-medium">
+              Hey there, I &apos;m{" "}
+              <span className="font-black text-black">
+                {displayText}
+                <span className="animate-pulse text-[#a3c4f3]">|</span>
+              </span>
+            </p>
 
-          {/* Typewriter Name */}
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-2 sm:mt-4 whitespace-nowrap overflow-hidden"
-            style={{
-              fontFamily: "'Oswald', sans-serif",
-              fontWeight: 300,
-              letterSpacing: "0.05em",
-            }}
-          >
-            HEY THERE, I&apos;M{" "}
-            <span className="text-orange-600 font-semibold">
-              <Typewriter
-                words={["UJJWAL"]}
-                loop
-                cursor
-                cursorStyle="_"
-                typeSpeed={90}
-                deleteSpeed={40}
-                delaySpeed={2000}
-              />
-            </span>
-          </motion.h2>
-        </div>
+            <p className="text-base sm:text-lg text-gray-700 max-w-xl leading-relaxed"></p>
 
-        {/* Right Side - Animated Profile Picture */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.9, ease: "easeOut", delay: 0.5 }}
-          whileHover={{ scale: 1.05 }}
-          className="flex justify-center mt-8 lg:mt-0"
-        >
-          <div className="w-40 h-40 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-gray-800 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition">
-            <span className="text-gray-400 text-sm sm:text-base md:text-lg">
-              Your Image Here
-            </span>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-8">
+              <button
+                className="bg-[#a3c4f3] border-4 border-black px-8 py-4 font-black uppercase text-base transform transition-all hover:translate-x-1 hover:translate-y-1"
+                style={{ boxShadow: "6px 6px 0px 0px #111" }}
+              >
+                View Work
+              </button>
+              <button
+                className="bg-[#ffb3c6] border-4 border-black px-8 py-4 font-black uppercase text-base transform transition-all hover:translate-x-1 hover:translate-y-1"
+                style={{ boxShadow: "6px 6px 0px 0px #111" }}
+              >
+                Contact Me
+              </button>
+            </div>
           </div>
-        </motion.div>
+        </div>
+        <div className="flex justify-center mt-8 lg:mt-0">
+          <div
+            className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[420px] lg:h-[420px] bg-white border-8 border-black overflow-hidden transform transition-all hover:scale-105"
+            style={{ boxShadow: "12px 12px 0px 0px #111" }}
+          >
+            <img
+              src="/your-photo.jpg"
+              alt="Ujjwal"
+              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
