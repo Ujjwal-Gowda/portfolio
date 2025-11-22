@@ -2,10 +2,6 @@
 import React, { useEffect, useState } from "react";
 
 export default function HeroSection() {
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  const fullText = "UJJWAL";
-
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -13,25 +9,6 @@ export default function HeroSection() {
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
-
-  useEffect(() => {
-    let timeout;
-
-    if (!isDeleting && displayText === fullText) {
-      timeout = setTimeout(() => setIsDeleting(true), 2000);
-    } else if (isDeleting && displayText === "") {
-      timeout = setTimeout(() => setIsDeleting(false), 500);
-    } else {
-      const speed = isDeleting ? 50 : 120;
-      timeout = setTimeout(() => {
-        setDisplayText((prev) =>
-          isDeleting ? prev.slice(0, -1) : fullText.slice(0, prev.length + 1),
-        );
-      }, speed);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [displayText, isDeleting]);
 
   return (
     <section
@@ -62,14 +39,10 @@ export default function HeroSection() {
           <div className="space-y-4 mt-8">
             <p className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-medium">
               Hey there, I &apos;m{" "}
-              <span className="font-black text-black">
-                {displayText}
-                <span className="animate-pulse text-[#a3c4f3]">|</span>
-              </span>
+              <span className="font-black text-black">UJJWAL</span>
             </p>
 
             <p className="text-base sm:text-lg text-gray-700 max-w-xl leading-relaxed"></p>
-
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-8">
               <button
                 className="bg-[#a3c4f3] border-4 border-black px-8 py-4 font-black uppercase text-base transform transition-all hover:translate-x-1 hover:translate-y-1"
@@ -86,18 +59,7 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
-        <div className="flex justify-center mt-8 lg:mt-0">
-          <div
-            className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[420px] lg:h-[420px] bg-white border-8 border-black overflow-hidden transform transition-all hover:scale-105"
-            style={{ boxShadow: "12px 12px 0px 0px #111" }}
-          >
-            <img
-              src="/your-photo.jpg"
-              alt="Ujjwal"
-              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
-            />
-          </div>
-        </div>
+        <div className="flex justify-center mt-8 lg:mt-0"></div>
       </div>
     </section>
   );
